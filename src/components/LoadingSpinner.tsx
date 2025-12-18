@@ -1,8 +1,8 @@
 export default function LoadingSpinner({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const sizeClasses = {
-    sm: 'w-4 h-4 border-2',
-    md: 'w-8 h-8 border-2',
-    lg: 'w-12 h-12 border-3',
+    sm: 'w-5 h-5 border-2',
+    md: 'w-10 h-10 border-3',
+    lg: 'w-14 h-14 border-3',
   };
 
   return (

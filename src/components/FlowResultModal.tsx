@@ -222,35 +222,35 @@ export default function FlowResultModal({ result, onClose }: FlowResultModalProp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="bg-zinc-900 rounded-2xl border border-zinc-800 w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm">
+      <div className="bg-zinc-900 rounded-t-3xl sm:rounded-3xl border-t border-x sm:border border-zinc-800 w-full sm:max-w-2xl max-h-[85vh] sm:max-h-[90vh] overflow-hidden flex flex-col safe-bottom">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-zinc-800">
-          <div>
-            <h2 className="text-xl font-bold capitalize">
+        <div className="flex items-start justify-between p-5 sm:p-6 border-b border-zinc-800">
+          <div className="flex-1 pr-4">
+            <h2 className="text-xl sm:text-2xl font-bold capitalize leading-tight">
               {result.flowName.replace(/-/g, ' ')}
             </h2>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm sm:text-base text-gray-400 mt-1">
               {new Date(result.timestamp).toLocaleString()}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-zinc-800 transition-colors"
+            className="w-11 h-11 flex items-center justify-center rounded-xl active:bg-zinc-800 transition-colors flex-shrink-0"
             aria-label="Close modal"
           >
-            <span className="text-2xl">×</span>
+            <span className="text-3xl leading-none">×</span>
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6">{renderContent()}</div>
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6 overscroll-contain">{renderContent()}</div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-zinc-800 flex justify-end">
+        <div className="p-5 sm:p-6 border-t border-zinc-800">
           <button
             onClick={onClose}
-            className="px-6 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg transition-colors"
+            className="w-full py-4 bg-zinc-800 active:bg-zinc-700 rounded-xl transition-colors text-base font-medium active:scale-[0.98]"
           >
             Close
           </button>

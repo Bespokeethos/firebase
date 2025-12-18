@@ -19,11 +19,11 @@ body {
 
 /* PWA safe areas for iPhone notch */
 .safe-top {
-  padding-top: env(safe-area-inset-top);
+  padding-top: max(env(safe-area-inset-top), 1rem);
 }
 
 .safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
 }
 
 .safe-left {
@@ -32,6 +32,18 @@ body {
 
 .safe-right {
   padding-right: env(safe-area-inset-right);
+}
+
+/* iOS touch optimization */
+button {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+/* Smooth scroll for iOS */
+* {
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Dark scrollbar */
