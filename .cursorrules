@@ -1,0 +1,66 @@
+# Cursor AI Rules - Bespokeethos/firebase
+
+## Repository Boundaries
+- ONLY write to this repository (firebase)
+- NEVER modify: bespoke-ethos, GMFG (read-only data sources)
+
+## Project Config
+- Project ID: bespokeethos-analytics-475007
+- Region: us-central1
+- Deploy: Firebase Hosting + Cloud Functions
+
+## Tech Stack (Strict)
+- Framework: Next.js 14 (App Router)
+- Language: TypeScript (strict)
+- AI: Firebase Genkit + Vertex AI
+- Database: Firestore + Vector Search
+- Functions: Cloud Functions 2nd Gen
+- Validation: Zod schemas
+- UI: Tailwind CSS + Shadcn/UI
+- Secrets: Google Secret Manager (NEVER .env)
+
+## AI Models
+- Default: gemini-2.5-flash (90%)
+- Escalation: gemini-2.5-pro (10%)
+- Embeddings: text-embedding-004
+
+## Correct Imports
+```typescript
+// Genkit
+import { genkit } from 'genkit';
+import { vertexAI } from '@genkit-ai/vertexai';
+import { defineFlow } from '@genkit-ai/flow';
+
+// Functions (v2 ONLY)
+import { onCall } from 'firebase-functions/v2/https';
+import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { defineSecret } from 'firebase-functions/params';
+
+// Firestore (Admin SDK)
+import { getFirestore } from 'firebase-admin/firestore';
+```
+
+## Never Use
+- firebase/firestore (client SDK in functions)
+- firebase-functions v1 syntax
+- process.env for secrets
+- @genkit-ai/googleai in production (use vertexai)
+
+## Error Handling Pattern
+```typescript
+try {
+  // operation
+} catch (error) {
+  console.error('FLOW_ERROR', {
+    flow: 'flowName',
+    step: 'stepName',
+    details: error instanceof Error ? error.message : String(error),
+  });
+  throw error;
+}
+```
+
+## Commands
+- npx genkit start (local UI)
+- firebase deploy --only functions
+- firebase emulators:start

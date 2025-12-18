@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "googlecloudtools.cloudcode",
+    "google.genkit",
+    "yoavbls.pretty-ts-errors",
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "prisma.prisma",
+    "github.copilot",
+    "github.copilot-chat"
+  ]
+}

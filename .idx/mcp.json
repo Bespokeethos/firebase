@@ -1,0 +1,20 @@
+{
+  "$schema": "https://idx.dev/schemas/mcp.json",
+  "servers": {
+    "firebase": {
+      "command": "npx",
+      "args": ["-y", "firebase-mcp"],
+      "env": {
+        "GOOGLE_CLOUD_PROJECT": "bespokeethos-analytics-475007",
+        "GCLOUD_PROJECT": "bespokeethos-analytics-475007"
+      }
+    },
+    "firestore": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-firestore"],
+      "env": {
+        "GOOGLE_CLOUD_PROJECT": "bespokeethos-analytics-475007"
+      }
+    }
+  }
+}
