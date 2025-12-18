@@ -114,69 +114,71 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen safe-top safe-bottom p-4">
-      <header className="mb-8">
-        <h1 className="text-2xl font-bold">Prometheus AI</h1>
-        <p className="text-gray-400 text-sm">Executive Prosthetic</p>
+    <main className="min-h-screen safe-top safe-bottom px-4 pb-6">
+      <header className="py-6 mb-4">
+        <h1 className="text-3xl font-bold">Prometheus AI</h1>
+        <p className="text-gray-400 text-base mt-1">Executive Prosthetic</p>
       </header>
 
       {/* Error Display */}
       {error && (
-        <div className="mb-4 bg-red-500/10 border border-red-500/20 rounded-xl p-4">
-          <div className="flex items-center gap-2">
-            <span className="text-red-400">⚠️</span>
-            <p className="text-red-400 text-sm">{error}</p>
+        <div className="mb-4 bg-red-500/10 border border-red-500/20 rounded-2xl p-4 active:scale-[0.98] transition-transform">
+          <div className="flex items-start gap-3">
+            <span className="text-red-400 text-xl">⚠️</span>
+            <div className="flex-1">
+              <p className="text-red-400 text-base leading-relaxed">{error}</p>
+              <button
+                onClick={() => setError(null)}
+                className="mt-3 text-sm text-red-400 hover:text-red-300 underline active:scale-95 transition-transform"
+              >
+                Dismiss
+              </button>
+            </div>
           </div>
-          <button
-            onClick={() => setError(null)}
-            className="mt-2 text-xs text-red-400 hover:text-red-300 underline"
-          >
-            Dismiss
-          </button>
         </div>
       )}
 
-      <section className="space-y-4">
+      <section className="space-y-5">
         {/* Status Card */}
-        <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
+        <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-gray-400">System Status</span>
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span className="text-base text-gray-400">System Status</span>
+            <span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
           </div>
-          <p className="text-lg font-medium">Online</p>
+          <p className="text-xl font-medium">Online</p>
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-4">
           <button
             onClick={() => runFlow('marketing-brief', 'Daily brief generated', '✓', 'blue')}
             disabled={loadingFlow !== null}
-            className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed relative"
+            className="bg-zinc-900 active:bg-zinc-800 rounded-2xl p-6 border border-zinc-800 text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed relative min-h-[120px] active:scale-[0.97]"
           >
             {loadingFlow === 'marketing-brief' ? (
               <div className="absolute inset-0 flex items-center justify-center">
-                <LoadingSpinner size="sm" />
+                <LoadingSpinner size="md" />
               </div>
             ) : (
               <>
-                <span className="text-2xl mb-2 block">📊</span>
-                <span className="font-medium">Daily Brief</span>
+                <span className="text-4xl mb-3 block">📊</span>
+                <span className="font-medium text-base">Daily Brief</span>
               </>
             )}
           </button>
           <button
             onClick={() => runFlow('competitor-watch', 'Competitor scan complete', '⚡', 'purple')}
             disabled={loadingFlow !== null}
-            className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed relative"
+            className="bg-zinc-900 active:bg-zinc-800 rounded-2xl p-6 border border-zinc-800 text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed relative min-h-[120px] active:scale-[0.97]"
           >
             {loadingFlow === 'competitor-watch' ? (
               <div className="absolute inset-0 flex items-center justify-center">
-                <LoadingSpinner size="sm" />
+                <LoadingSpinner size="md" />
               </div>
             ) : (
               <>
-                <span className="text-2xl mb-2 block">🔍</span>
-                <span className="font-medium">Competitors</span>
+                <span className="text-4xl mb-3 block">🔍</span>
+                <span className="font-medium text-base">Competitors</span>
               </>
             )}
           </button>
@@ -187,16 +189,16 @@ export default function Home() {
               })
             }
             disabled={loadingFlow !== null}
-            className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed relative"
+            className="bg-zinc-900 active:bg-zinc-800 rounded-2xl p-6 border border-zinc-800 text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed relative min-h-[120px] active:scale-[0.97]"
           >
             {loadingFlow === 'content-drafter' ? (
               <div className="absolute inset-0 flex items-center justify-center">
-                <LoadingSpinner size="sm" />
+                <LoadingSpinner size="md" />
               </div>
             ) : (
               <>
-                <span className="text-2xl mb-2 block">✍️</span>
-                <span className="font-medium">Content</span>
+                <span className="text-4xl mb-3 block">✍️</span>
+                <span className="font-medium text-base">Content</span>
               </>
             )}
           </button>
@@ -205,40 +207,40 @@ export default function Home() {
               runFlow('opportunity-scanner', 'Opportunities scanned', '🎯', 'yellow')
             }
             disabled={loadingFlow !== null}
-            className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed relative"
+            className="bg-zinc-900 active:bg-zinc-800 rounded-2xl p-6 border border-zinc-800 text-left transition-all disabled:opacity-50 disabled:cursor-not-allowed relative min-h-[120px] active:scale-[0.97]"
           >
             {loadingFlow === 'opportunity-scanner' ? (
               <div className="absolute inset-0 flex items-center justify-center">
-                <LoadingSpinner size="sm" />
+                <LoadingSpinner size="md" />
               </div>
             ) : (
               <>
-                <span className="text-2xl mb-2 block">🎯</span>
-                <span className="font-medium">Opportunities</span>
+                <span className="text-4xl mb-3 block">🎯</span>
+                <span className="font-medium text-base">Opportunities</span>
               </>
             )}
           </button>
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
-          <h2 className="text-sm text-gray-400 mb-3">Recent Activity</h2>
+        <div className="bg-zinc-900 rounded-2xl p-5 border border-zinc-800">
+          <h2 className="text-base font-medium text-gray-400 mb-4">Recent Activity</h2>
           {recentActivity.length === 0 ? (
-            <p className="text-sm text-gray-500 text-center py-4">
+            <p className="text-base text-gray-500 text-center py-6">
               No recent activity. Click a button above to get started.
             </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {recentActivity.map((activity) => (
                 <div key={activity.id} className="flex items-center gap-3">
                   <span
-                    className={`w-8 h-8 ${colorClasses[activity.color]} rounded-lg flex items-center justify-center text-sm`}
+                    className={`w-10 h-10 ${colorClasses[activity.color]} rounded-xl flex items-center justify-center text-base`}
                   >
                     {activity.icon}
                   </span>
-                  <div>
-                    <p className="text-sm font-medium">{activity.title}</p>
-                    <p className="text-xs text-gray-500">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-base font-medium truncate">{activity.title}</p>
+                    <p className="text-sm text-gray-500">
                       {formatTimestamp(activity.timestamp)}
                     </p>
                   </div>
