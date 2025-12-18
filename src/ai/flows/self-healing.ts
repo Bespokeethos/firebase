@@ -49,12 +49,10 @@ export const selfHealingFlow = ai.defineFlow(
         { name: "Secret Manager", status: "ok", message: "Secrets accessible" },
       ];
 
-      // Filter to specific service if requested
+      // Filter to specific service if requested, otherwise check all
       const servicesToCheck = input.specificService
         ? services.filter(s => s.name === input.specificService)
-        : input.checkAll
-          ? services
-          : [];
+        : services;
 
       const hasErrors = servicesToCheck.some((s) => s.status === "error");
       const hasWarnings = servicesToCheck.some((s) => s.status === "warning");
