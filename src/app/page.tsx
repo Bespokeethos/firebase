@@ -1,4 +1,95 @@
+"use client";
+
+import { useState } from "react";
+import { functions_api } from "@/lib/firebase";
+
 export default function Home() {
+  const [loading, setLoading] = useState<string | null>(null);
+  const [systemStatus, setSystemStatus] = useState<"online" | "checking">(
+    "online"
+  );
+
+  const handleMarketingBrief = async () => {
+    try {
+      setLoading("brief");
+      const result = await functions_api.marketingBrief({
+        dateRange: "last7days",
+        properties: ["bespoke-ethos", "gmfg"],
+      });
+      console.log("Marketing Brief:", result.data);
+      alert(`Brief generated! Summary: ${(result.data as any).summary}`);
+    } catch (error) {
+      console.error("Error generating brief:", error);
+      alert("Error generating brief. Check console for details.");
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  const handleCompetitorCheck = async () => {
+    try {
+      setLoading("competitors");
+      const result = await functions_api.competitorWatch({
+        checkType: "quick",
+      });
+      console.log("Competitor Watch:", result.data);
+      alert(`Competitor check complete! ${(result.data as any).summary}`);
+    } catch (error) {
+      console.error("Error checking competitors:", error);
+      alert("Error checking competitors. Check console for details.");
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  const handleContentDraft = async () => {
+    try {
+      setLoading("content");
+      const result = await functions_api.contentDrafter({
+        topic: "AI-Powered Business Intelligence",
+        contentType: "blog",
+        tone: "professional",
+      });
+      console.log("Content Draft:", result.data);
+      alert(`Content drafted! Title: ${(result.data as any).title}`);
+    } catch (error) {
+      console.error("Error drafting content:", error);
+      alert("Error drafting content. Check console for details.");
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  const handleOpportunitySearch = async () => {
+    try {
+      setLoading("opportunities");
+      const result = await functions_api.opportunityScanner({
+        sources: ["nglcc", "news"],
+        industry: "consulting",
+      });
+      console.log("Opportunities:", result.data);
+      alert(
+        `Found ${(result.data as any).totalFound} opportunities! ${(result.data as any).summary}`
+      );
+    } catch (error) {
+      console.error("Error scanning opportunities:", error);
+      alert("Error scanning opportunities. Check console for details.");
+    } finally {
+      setLoading(null);
+    }
+  };
+
+  const handleSystemCheck = async () => {
+    try {
+      setSystemStatus("checking");
+      const result = await functions_api.selfHealing({ checkAll: true });
+      console.log("System Health:", result.data);
+      setSystemStatus("online");
+    } catch (error) {
+      console.error("Error checking system:", error);
+      setSystemStatus("online");
+    }
+  };
   return (
     <main className="min-h-screen safe-top safe-bottom p-4">
       <header className="mb-8">
@@ -8,31 +99,66 @@ export default function Home() {
 
       <section className="space-y-4">
         {/* Status Card */}
-        <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-800">
+        <button
+          onClick={handleSystemCheck}
+          className="bg-zinc-900 rounded-xl p-4 border border-zinc-800 hover:bg-zinc-800 transition-colors w-full text-left"
+        >
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-400">System Status</span>
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <span
+              className={`w-2 h-2 rounded-full ${
+                systemStatus === "online"
+                  ? "bg-green-500 animate-pulse"
+                  : "bg-yellow-500"
+              }`}
+            />
           </div>
-          <p className="text-lg font-medium">Online</p>
-        </div>
+          <p className="text-lg font-medium">
+            {systemStatus === "online" ? "Online" : "Checking..."}
+          </p>
+        </button>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
-          <button className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors">
+          <button
+            onClick={handleMarketingBrief}
+            disabled={loading !== null}
+            className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors disabled:opacity-50"
+          >
             <span className="text-2xl mb-2 block">📊</span>
-            <span className="font-medium">Daily Brief</span>
+            <span className="font-medium">
+              {loading === "brief" ? "Loading..." : "Daily Brief"}
+            </span>
           </button>
-          <button className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors">
+          <button
+            onClick={handleCompetitorCheck}
+            disabled={loading !== null}
+            className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors disabled:opacity-50"
+          >
             <span className="text-2xl mb-2 block">🔍</span>
-            <span className="font-medium">Competitors</span>
+            <span className="font-medium">
+              {loading === "competitors" ? "Loading..." : "Competitors"}
+            </span>
           </button>
-          <button className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors">
+          <button
+            onClick={handleContentDraft}
+            disabled={loading !== null}
+            className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors disabled:opacity-50"
+          >
             <span className="text-2xl mb-2 block">✍️</span>
-            <span className="font-medium">Content</span>
+            <span className="font-medium">
+              {loading === "content" ? "Loading..." : "Content"}
+            </span>
           </button>
-          <button className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors">
+          <button
+            onClick={handleOpportunitySearch}
+            disabled={loading !== null}
+            className="bg-zinc-900 hover:bg-zinc-800 rounded-xl p-4 border border-zinc-800 text-left transition-colors disabled:opacity-50"
+          >
             <span className="text-2xl mb-2 block">🎯</span>
-            <span className="font-medium">Opportunities</span>
+            <span className="font-medium">
+              {loading === "opportunities" ? "Loading..." : "Opportunities"}
+            </span>
           </button>
         </div>
 
