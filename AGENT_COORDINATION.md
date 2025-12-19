@@ -33,15 +33,16 @@
 | Email Sequences        | Opus-A | `functions/src/lib/email.ts`, `functions/src/scheduled.ts`   |
 | Update Lead Status     | Opus-A | `functions/src/index.ts`                                     |
 | Competitor Scraper     | Opus-A | `src/ai/flows/competitor-watch.ts`                           |
-| Dashboard Data Binding | Opus-A | `src/app/dashboard/page.tsx` (live API integration)          |
+| Dashboard Data Binding | Opus-A  | `src/app/dashboard/page.tsx` (live API integration)          |
+| Dashboard Polish       | Cloud-B | Competitors, Content, Settings pages added                   |
 
 ---
 
 ## 🚧 IN PROGRESS
 
-| Item | Agent | Status          |
-| ---- | ----- | --------------- |
-| None | -     | ✅ All complete |
+| Item               | Agent           | Status                                    |
+| ------------------ | --------------- | ----------------------------------------- |
+| Firebase Deploy    | Agent-B (Cloud) | ⚠️ Needs `firebase login --reauth` first |
 
 ---
 
