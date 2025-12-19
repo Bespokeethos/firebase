@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import type { ReactNode } from 'react';
 
 import './globals.css';
-
 export const metadata: Metadata = {
   title: 'Prometheus AI',
   description: 'Autonomous AI Executive Prosthetic',

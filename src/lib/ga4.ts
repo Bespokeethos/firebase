@@ -24,7 +24,6 @@ function getDb(): Firestore {
   db = getFirestore();
   return db;
 }
-
 // GA4 Property IDs - will be loaded from Secret Manager at runtime
 let PROPERTY_IDS: Record<string, string> | null = null;
 
@@ -69,12 +68,10 @@ function getPropertyId(property: string): string {
   if (!PROPERTY_IDS) {
     throw new Error('Property IDs not initialized. Call setPropertyIds() first.');
   }
-
   const propertyId = PROPERTY_IDS[property];
   if (!propertyId) {
     throw new Error(`Unknown property: ${property}`);
   }
-
   return propertyId;
 }
 
