@@ -3,26 +3,26 @@
  * Exposes Genkit flows as callable endpoints
  */
 
-import { onCall, HttpsError } from "firebase-functions/v2/https";
-import { defineSecret } from "firebase-functions/params";
-import { initializeApp } from "firebase-admin/app";
-import { getFirestore, FieldValue } from "firebase-admin/firestore";
+import { initializeApp } from 'firebase-admin/app';
+import { FieldValue, getFirestore } from 'firebase-admin/firestore';
+import { defineSecret } from 'firebase-functions/params';
+import { HttpsError, onCall } from 'firebase-functions/v2/https';
 
 // Initialize Firebase Admin
 initializeApp();
 
 // Define secrets
-const geminiKey = defineSecret("GEMINI_API_KEY");
+const geminiKey = defineSecret('GEMINI_API_KEY');
 
 // Import Genkit flows
 // Note: These imports reference the parent project's src directory
 import {
-  marketingBriefFlow,
   competitorWatchFlow,
-  selfHealingFlow,
-  opportunityScannerFlow,
   contentDrafterFlow,
-} from "../../src/ai/flows";
+  marketingBriefFlow,
+  opportunityScannerFlow,
+  selfHealingFlow,
+} from '../../src/ai/flows';
 
 /**
  * Marketing Brief - Generate daily executive summary from GA4 data
@@ -31,8 +31,8 @@ import {
 export const marketingBrief = onCall(
   {
     secrets: [geminiKey],
-    region: "us-central1",
-    memory: "512MiB",
+    region: 'us-central1',
+    memory: '512MiB',
     timeoutSeconds: 60,
   },
   async (request) => {
@@ -41,8 +41,8 @@ export const marketingBrief = onCall(
       const result = await marketingBriefFlow(input);
       return { success: true, data: result };
     } catch (error) {
-      console.error("FUNCTION_ERROR", {
-        function: "marketingBrief",
+      console.error('FUNCTION_ERROR', {
+        function: 'marketingBrief',
         details: error instanceof Error ? error.message : String(error),
       });
       throw error;
@@ -57,8 +57,8 @@ export const marketingBrief = onCall(
 export const competitorWatch = onCall(
   {
     secrets: [geminiKey],
-    region: "us-central1",
-    memory: "512MiB",
+    region: 'us-central1',
+    memory: '512MiB',
     timeoutSeconds: 120,
   },
   async (request) => {
@@ -67,8 +67,8 @@ export const competitorWatch = onCall(
       const result = await competitorWatchFlow(input);
       return { success: true, data: result };
     } catch (error) {
-      console.error("FUNCTION_ERROR", {
-        function: "competitorWatch",
+      console.error('FUNCTION_ERROR', {
+        function: 'competitorWatch',
         details: error instanceof Error ? error.message : String(error),
       });
       throw error;
@@ -83,8 +83,8 @@ export const competitorWatch = onCall(
 export const selfHealing = onCall(
   {
     secrets: [geminiKey],
-    region: "us-central1",
-    memory: "256MiB",
+    region: 'us-central1',
+    memory: '256MiB',
     timeoutSeconds: 30,
   },
   async (request) => {
@@ -93,8 +93,8 @@ export const selfHealing = onCall(
       const result = await selfHealingFlow(input);
       return { success: true, data: result };
     } catch (error) {
-      console.error("FUNCTION_ERROR", {
-        function: "selfHealing",
+      console.error('FUNCTION_ERROR', {
+        function: 'selfHealing',
         details: error instanceof Error ? error.message : String(error),
       });
       throw error;
@@ -109,8 +109,8 @@ export const selfHealing = onCall(
 export const opportunityScanner = onCall(
   {
     secrets: [geminiKey],
-    region: "us-central1",
-    memory: "512MiB",
+    region: 'us-central1',
+    memory: '512MiB',
     timeoutSeconds: 120,
   },
   async (request) => {
@@ -119,8 +119,8 @@ export const opportunityScanner = onCall(
       const result = await opportunityScannerFlow(input);
       return { success: true, data: result };
     } catch (error) {
-      console.error("FUNCTION_ERROR", {
-        function: "opportunityScanner",
+      console.error('FUNCTION_ERROR', {
+        function: 'opportunityScanner',
         details: error instanceof Error ? error.message : String(error),
       });
       throw error;
@@ -135,8 +135,8 @@ export const opportunityScanner = onCall(
 export const contentDrafter = onCall(
   {
     secrets: [geminiKey],
-    region: "us-central1",
-    memory: "512MiB",
+    region: 'us-central1',
+    memory: '512MiB',
     timeoutSeconds: 90,
   },
   async (request) => {
@@ -145,8 +145,8 @@ export const contentDrafter = onCall(
       const result = await contentDrafterFlow(input);
       return { success: true, data: result };
     } catch (error) {
-      console.error("FUNCTION_ERROR", {
-        function: "contentDrafter",
+      console.error('FUNCTION_ERROR', {
+        function: 'contentDrafter',
         details: error instanceof Error ? error.message : String(error),
       });
       throw error;
@@ -160,7 +160,7 @@ export const contentDrafter = onCall(
  */
 export const submitLead = onCall(
   {
-    region: "us-central1",
+    region: 'us-central1',
     cors: true,
   },
   async (request) => {
@@ -168,10 +168,18 @@ export const submitLead = onCall(
 
     try {
       // Validate input
-      const { email, name, company, phone, message, source = 'contact_form', referrer } = request.data;
+      const {
+        email,
+        name,
+        company,
+        phone,
+        message,
+        source = 'contact_form',
+        referrer,
+      } = request.data;
 
       if (!email || !name || !message) {
-        throw new https Error('invalid-argument', 'Missing required fields');
+        throw new HttpsError('invalid-argument', 'Missing required fields');
       }
 
       // Check for duplicate (same email in last 24 hours)
@@ -245,19 +253,19 @@ export const submitLead = onCall(
 export const brandPositioning = onCall(
   {
     secrets: [geminiKey],
-    region: "us-central1",
-    memory: "512MiB",
+    region: 'us-central1',
+    memory: '512MiB',
     timeoutSeconds: 90,
   },
   async (request) => {
     try {
       const input = request.data || {};
-      const { brandPositioningFlow } = await import("../../src/ai/flows/brand-positioning");
+      const { brandPositioningFlow } = await import('../../src/ai/flows/brand-positioning');
       const result = await brandPositioningFlow(input);
       return { success: true, data: result };
     } catch (error) {
-      console.error("FUNCTION_ERROR", {
-        function: "brandPositioning",
+      console.error('FUNCTION_ERROR', {
+        function: 'brandPositioning',
         details: error instanceof Error ? error.message : String(error),
       });
       throw error;
@@ -266,4 +274,4 @@ export const brandPositioning = onCall(
 );
 
 // Export scheduled functions
-export * from "./scheduled";
+export * from './scheduled';

@@ -7,7 +7,7 @@ export default function ContactPage() {
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">Get in Touch</h1>
           <p className="mt-4 text-lg text-gray-400">
-            Tell us about your project and we'll get back to you within 24 hours.
+            Tell us about your project and we&apos;ll get back to you within 24 hours.
           </p>
         </div>
 

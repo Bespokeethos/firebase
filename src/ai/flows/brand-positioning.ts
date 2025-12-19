@@ -3,10 +3,20 @@
  * Generates comprehensive brand strategy using Gemini Flash
  */
 
-import { defineFlow } from '@genkit-ai/flow';
+import { getApps, initializeApp } from 'firebase-admin/app';
+import type { Firestore } from 'firebase-admin/firestore';
 import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 import { z } from 'zod';
 import { ai } from '../genkit';
+
+// Lazy Firestore init (avoid build-time credential errors)
+let db: Firestore | null = null;
+function getDb(): Firestore {
+  if (db) return db;
+  if (getApps().length === 0) initializeApp();
+  db = getFirestore();
+  return db;
+}
 
 // Input Schema
 const BrandInputSchema = z.object({
@@ -57,14 +67,14 @@ const BrandPositioningSchema = z.object({
 type BrandInput = z.infer<typeof BrandInputSchema>;
 type BrandPositioning = z.infer<typeof BrandPositioningSchema>;
 
-export const brandPositioningFlow = defineFlow(
+export const brandPositioningFlow = ai.defineFlow(
   {
     name: 'brandPositioning',
     inputSchema: BrandInputSchema,
     outputSchema: BrandPositioningSchema,
   },
   async (input: BrandInput): Promise<BrandPositioning> => {
-    const db = getFirestore();
+    const db = getDb();
     const startTime = Date.now();
 
     try {
