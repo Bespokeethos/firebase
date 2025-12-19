@@ -5,34 +5,34 @@
  * Uses gemini-2.5-flash by default (90% of operations).
  */
 
-import { vertexAI } from "@genkit-ai/vertexai";
-import { genkit } from "genkit";
+import { vertexAI } from '@genkit-ai/vertexai';
+import { genkit } from 'genkit';
 
 // Initialize tracing
-import "./tracing";
+import './tracing';
 
 // Genkit instance configured for Vertex AI
 export const ai = genkit({
   plugins: [
     vertexAI({
-      projectId: "studio-4405829326-5e892",
-      location: "us-central1",
+      projectId: 'bespokeethos-analytics-475007',
+      location: 'us-central1',
     }),
   ],
   // Default model: Flash for speed and cost efficiency
-  model: "vertexai/gemini-2.0-flash",
+  model: 'vertexai/gemini-2.5-flash',
 });
 
 // Model references for explicit use
 export const models = {
   // Default: 90% of operations - cheap & fast
-  flash: "vertexai/gemini-2.0-flash",
+  flash: 'vertexai/gemini-2.5-flash',
 
   // Escalation: 10% - complex decisions > $1000 value
-  pro: "vertexai/gemini-2.0-pro",
+  pro: 'vertexai/gemini-2.5-pro',
 
   // Embeddings for vector search
-  embeddings: "vertexai/text-embedding-004",
+  embeddings: 'vertexai/text-embedding-004',
 } as const;
 
 // Re-export for convenience

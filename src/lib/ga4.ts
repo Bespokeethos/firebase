@@ -4,15 +4,26 @@
  */
 
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import { initializeApp, getApps } from 'firebase-admin/app';
+import { getApps, initializeApp } from 'firebase-admin/app';
+import type { Firestore } from 'firebase-admin/firestore';
+import { FieldValue, getFirestore } from 'firebase-admin/firestore';
 
-// Initialize Firebase Admin if not already initialized
-if (getApps().length === 0) {
-  initializeApp();
+let db: Firestore | null = null;
+
+function getDb(): Firestore {
+  if (db) return db;
+
+  // IMPORTANT: Do not initialize Firebase Admin at module-import time.
+  // Next.js will evaluate modules during `next build` ("Collecting page data").
+  // `initializeApp()` triggers Application Default Credentials resolution which
+  // may read GOOGLE_APPLICATION_CREDENTIALS and fail if the file isn't present.
+  if (getApps().length === 0) {
+    initializeApp();
+  }
+
+  db = getFirestore();
+  return db;
 }
-
-const db = getFirestore();
 
 // GA4 Property IDs - will be loaded from Secret Manager at runtime
 let PROPERTY_IDS: Record<string, string> | null = null;
@@ -47,7 +58,7 @@ export type DateRangeOption = 'today' | 'yesterday' | 'last7days' | 'last30days'
 export function setPropertyIds(bespoke: string, gmfg: string) {
   PROPERTY_IDS = {
     'bespoke-ethos': bespoke,
-    'gmfg': gmfg,
+    gmfg: gmfg,
   };
 }
 
@@ -58,12 +69,12 @@ function getPropertyId(property: string): string {
   if (!PROPERTY_IDS) {
     throw new Error('Property IDs not initialized. Call setPropertyIds() first.');
   }
-  
+
   const propertyId = PROPERTY_IDS[property];
   if (!propertyId) {
     throw new Error(`Unknown property: ${property}`);
   }
-  
+
   return propertyId;
 }
 
@@ -98,7 +109,7 @@ function getCacheKey(property: string, dateRange: string): string {
 function isCacheValid(cachedAt: string): boolean {
   const cacheTime = new Date(cachedAt).getTime();
   const now = Date.now();
-  return (now - cacheTime) < CACHE_DURATION_MS;
+  return now - cacheTime < CACHE_DURATION_MS;
 }
 
 /**
@@ -109,6 +120,7 @@ async function getCachedData(
   dateRange: string
 ): Promise<GA4AnalyticsData | null> {
   try {
+    const db = getDb();
     const cacheKey = getCacheKey(property, dateRange);
     const docRef = db.collection('analytics').doc(cacheKey);
     const doc = await docRef.get();
@@ -144,9 +156,10 @@ async function cacheData(
   data: GA4AnalyticsData
 ): Promise<void> {
   try {
+    const db = getDb();
     const cacheKey = getCacheKey(property, dateRange);
     const docRef = db.collection('analytics').doc(cacheKey);
-    
+
     await docRef.set({
       ...data,
       cachedAt: new Date().toISOString(),
@@ -217,13 +230,13 @@ async function fetchFromGA4(
 
     // Parse top pages
     const topPages = (pagesResponse.rows || [])
-      .map(row => row.dimensionValues?.[0]?.value || '')
-      .filter(page => page !== '');
+      .map((row) => row.dimensionValues?.[0]?.value || '')
+      .filter((page) => page !== '');
 
     // Parse top sources
     const topSources = (sourcesResponse.rows || [])
-      .map(row => row.dimensionValues?.[0]?.value || '')
-      .filter(source => source !== '');
+      .map((row) => row.dimensionValues?.[0]?.value || '')
+      .filter((source) => source !== '');
 
     const analyticsData: GA4AnalyticsData = {
       sessions,
@@ -251,7 +264,7 @@ async function fetchFromGA4(
 
 /**
  * Get analytics data for a property with caching
- * 
+ *
  * @param property - Property name ('bespoke-ethos' or 'gmfg')
  * @param dateRange - Date range option
  * @returns Analytics data (from cache or fresh from GA4 API)
@@ -281,13 +294,15 @@ export async function getAnalyticsData(
       dateRange,
       error: error instanceof Error ? error.message : String(error),
     });
-    throw new Error(`Failed to get analytics data for ${property}: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Failed to get analytics data for ${property}: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 
 /**
  * Get aggregated analytics data for multiple properties
- * 
+ *
  * @param properties - Array of property names
  * @param dateRange - Date range option
  * @returns Aggregated analytics data
@@ -298,9 +313,7 @@ export async function getAggregatedAnalyticsData(
 ): Promise<GA4AnalyticsData> {
   try {
     // Fetch data for all properties in parallel
-    const dataPromises = properties.map(property => 
-      getAnalyticsData(property, dateRange)
-    );
+    const dataPromises = properties.map((property) => getAnalyticsData(property, dateRange));
     const allData = await Promise.all(dataPromises);
 
     // Guard against empty data
@@ -314,8 +327,8 @@ export async function getAggregatedAnalyticsData(
       users: allData.reduce((sum, data) => sum + data.users, 0),
       bounceRate: allData.reduce((sum, data) => sum + data.bounceRate, 0) / allData.length,
       avgDuration: allData.reduce((sum, data) => sum + data.avgDuration, 0) / allData.length,
-      topPages: [...new Set(allData.flatMap(data => data.topPages))].slice(0, 5),
-      topSources: [...new Set(allData.flatMap(data => data.topSources))].slice(0, 5),
+      topPages: [...new Set(allData.flatMap((data) => data.topPages))].slice(0, 5),
+      topSources: [...new Set(allData.flatMap((data) => data.topSources))].slice(0, 5),
       dateRange,
       property: properties.join(', '),
     };

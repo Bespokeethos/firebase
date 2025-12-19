@@ -7,7 +7,6 @@
 
     // Antigravity IDE
     "n2ns.antigravity-panel",
-    "asierdev.antigravity-quota-viewer",
     "munkhin.auto-accept-agent",
 
     // Firebase / Google Cloud
@@ -34,4 +33,3 @@
     "formulahendry.auto-rename-tag"
   ]
 }
-
