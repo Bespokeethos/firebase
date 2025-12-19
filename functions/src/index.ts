@@ -17,12 +17,19 @@ const geminiKey = defineSecret('GEMINI_API_KEY');
 // Import Genkit flows
 // Note: These imports reference the parent project's src directory
 import {
+  chatbotFlow,
   competitorWatchFlow,
   contentDrafterFlow,
   marketingBriefFlow,
   opportunityScannerFlow,
   selfHealingFlow,
 } from '../../src/ai/flows';
+
+import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from './lib/rate-limit';
+import { alertHighValueLead } from './lib/slack';
+
+// High-value lead threshold
+const HIGH_VALUE_LEAD_SCORE = 75;
 
 /**
  * Chatbot - Conversational AI assistant
@@ -195,6 +202,17 @@ export const submitLead = onCall(
   async (request) => {
     const db = getFirestore();
 
+    // Rate limiting
+    const clientId = getClientIdentifier(request as never);
+    const rateLimit = await checkRateLimit(clientId, RATE_LIMITS.submitLead);
+
+    if (!rateLimit.allowed) {
+      throw new HttpsError(
+        'resource-exhausted',
+        `Rate limit exceeded. Try again in ${Math.ceil((rateLimit.retryAfterMs || 60000) / 1000)} seconds.`
+      );
+    }
+
     try {
       // Validate input
       const {
@@ -258,6 +276,20 @@ export const submitLead = onCall(
         score,
         source,
       });
+
+      // Alert on high-value leads
+      if (score >= HIGH_VALUE_LEAD_SCORE) {
+        await alertHighValueLead({
+          name,
+          email,
+          company,
+          score,
+          source,
+          message,
+        }).catch((err) => {
+          console.error('SLACK_ALERT_FAILED', { error: String(err) });
+        });
+      }
 
       return {
         success: true,
