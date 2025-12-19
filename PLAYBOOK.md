@@ -2,15 +2,20 @@
 
 ## Quick Reference for Future Sessions
 
+**Project:** bespokeethos-analytics-475007  
+**Owner:** contact@bespokeethos.com  
+**Region:** us-central1  
+**Auth Method:** Browser (interactive)
+
 ---
 
-## 1. AUTHENTICATE (Run Once)
+## 1. AUTHENTICATE (Browser-Based)
 
 ```bash
-# Firebase CLI
+# Firebase CLI (opens browser)
 firebase login
 
-# Google Cloud CLI
+# Google Cloud CLI (opens browser)
 gcloud auth login
 gcloud auth application-default login
 
@@ -18,6 +23,8 @@ gcloud auth application-default login
 gcloud config set project bespokeethos-analytics-475007
 firebase use bespokeethos-analytics-475007
 ```
+
+> **Note:** Always prefer browser authentication over service account keys when possible.
 
 ---
 

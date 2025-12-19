@@ -40,3 +40,6 @@ src/**/*.js.map
 
 # Testing
 coverage/
+
+# Secret identifiers
+.env.secrets
