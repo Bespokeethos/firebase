@@ -25,6 +25,35 @@ import {
 } from '../../src/ai/flows';
 
 /**
+ * Chatbot - Conversational AI assistant
+ * Callable function for real-time chat interactions
+ */
+export const chatbot = onCall(
+  {
+    secrets: [geminiKey],
+    region: 'us-central1',
+    memory: '256MiB',
+    timeoutSeconds: 30,
+  },
+  async (request) => {
+    try {
+      const input = request.data || {};
+      if (!input.messages || !Array.isArray(input.messages)) {
+        throw new HttpsError('invalid-argument', 'messages array is required');
+      }
+      const result = await chatbotFlow(input);
+      return { success: true, data: result };
+    } catch (error) {
+      console.error('FUNCTION_ERROR', {
+        function: 'chatbot',
+        details: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
+  }
+);
+
+/**
  * Marketing Brief - Generate daily executive summary from GA4 data
  * Callable function that triggers the marketing brief flow
  */
