@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Lead {
   id: string;
@@ -22,9 +22,25 @@ interface Lead {
 export default function LeadsPage() {
   const [filter, setFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Placeholder data - would fetch from API
-  const leads: Lead[] = [];
+  useEffect(() => {
+    async function fetchLeads() {
+      try {
+        const res = await fetch('/api/dashboard/leads');
+        if (res.ok) {
+          const data = await res.json();
+          setLeads(data.data?.leads || []);
+        }
+      } catch (error) {
+        console.error('Failed to fetch leads:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchLeads();
+  }, []);
 
   const filteredLeads = leads.filter((lead) => {
     if (filter !== 'all' && lead.status !== filter) return false;
@@ -115,7 +131,13 @@ export default function LeadsPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredLeads.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                    Loading leads...
+                  </td>
+                </tr>
+              ) : filteredLeads.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                     {leads.length === 0
