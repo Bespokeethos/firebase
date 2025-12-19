@@ -5,9 +5,13 @@
 
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import { defineSecret } from "firebase-functions/params";
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { BetaAnalyticsDataClient } from '@google-analytics/data';
 
 // Define secrets
 const geminiKey = defineSecret("GEMINI_API_KEY");
+const bespokePropertyId = defineSecret('GA4_BESPOKE_PROPERTY_ID');
+const gmfgPropertyId = defineSecret('GA4_GMFG_PROPERTY_ID');
 
 // Import flows
 import {
