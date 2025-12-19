@@ -1,13 +1,37 @@
 {
   "recommendations": [
+    // AI / Copilot
+    "github.copilot",
+    "github.copilot-chat",
+    "anthropic.claude-code",
+
+    // Antigravity IDE
+    "n2ns.antigravity-panel",
+    "asierdev.antigravity-quota-viewer",
+    "munkhin.auto-accept-agent",
+
+    // Firebase / Google Cloud
     "googlecloudtools.cloudcode",
     "google.genkit",
+    "toba.vsfire",
+
+    // TypeScript / JavaScript
     "yoavbls.pretty-ts-errors",
-    "bradlc.vscode-tailwindcss",
-    "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "prisma.prisma",
-    "github.copilot",
-    "github.copilot-chat"
+    "esbenp.prettier-vscode",
+
+    // Tailwind / CSS
+    "bradlc.vscode-tailwindcss",
+
+    // Git
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+
+    // Productivity
+    "usernamehw.errorlens",
+    "streetsidesoftware.code-spell-checker",
+    "christian-kohler.path-intellisense",
+    "formulahendry.auto-rename-tag"
   ]
 }
+

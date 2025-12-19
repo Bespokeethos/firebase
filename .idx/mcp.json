@@ -1,20 +1,26 @@
 {
-  "$schema": "https://idx.dev/schemas/mcp.json",
-  "servers": {
+  "mcpServers": {
     "firebase": {
       "command": "npx",
       "args": ["-y", "firebase-mcp"],
       "env": {
-        "GOOGLE_CLOUD_PROJECT": "bespokeethos-analytics-475007",
-        "GCLOUD_PROJECT": "bespokeethos-analytics-475007"
+        "GOOGLE_APPLICATION_CREDENTIALS": "c:\\firebase\\service-account-key.json"
       }
     },
-    "firestore": {
+    "github": {
       "command": "npx",
-      "args": ["-y", "@anthropic/mcp-firestore"],
+      "args": ["-y", "@anthropic/mcp-github"],
       "env": {
-        "GOOGLE_CLOUD_PROJECT": "bespokeethos-analytics-475007"
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
       }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-filesystem", "c:\\firebase"]
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-memory"]
     }
   }
 }
