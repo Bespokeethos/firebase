@@ -1,31 +1,34 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
+import type { Metadata, Viewport } from 'next';
+import type { ReactNode } from 'react';
+
+import './globals.css';
 export const metadata: Metadata = {
-  title: "Prometheus AI",
-  description: "Autonomous AI Executive Prosthetic",
-  manifest: "/manifest.json",
+  title: 'Prometheus AI',
+  description: 'Autonomous AI Executive Prosthetic',
+  manifest: '/manifest.json',
+  icons: {
+    apple: [{ url: '/icons/icon-192.png' }],
+  },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Prometheus",
+    statusBarStyle: 'black-translucent',
+    title: 'Prometheus',
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
-  width: "device-width",
+  themeColor: '#000000',
+  width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  viewportFit: "cover",
+  viewportFit: 'cover',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark">
       <head>
@@ -39,6 +42,7 @@ export default function RootLayout({
       <body className="bg-black text-white antialiased font-sans">
         {children}
       </body>
+      <body className="bg-black font-sans text-white antialiased">{children}</body>
     </html>
   );
 }
