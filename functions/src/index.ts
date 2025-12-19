@@ -3,9 +3,10 @@
  * Exposes Genkit flows as callable endpoints
  */
 
-import { onCall } from "firebase-functions/v2/https";
+import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { defineSecret } from "firebase-functions/params";
 import { initializeApp } from "firebase-admin/app";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
 
 // Initialize Firebase Admin
 initializeApp();
@@ -146,6 +147,117 @@ export const contentDrafter = onCall(
     } catch (error) {
       console.error("FUNCTION_ERROR", {
         function: "contentDrafter",
+        details: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
+  }
+);
+
+/**
+ * Lead Capture - Submit and score leads
+ * Callable function for contact form submissions
+ */
+export const submitLead = onCall(
+  {
+    region: "us-central1",
+    cors: true,
+  },
+  async (request) => {
+    const db = getFirestore();
+
+    try {
+      // Validate input
+      const { email, name, company, phone, message, source = 'contact_form', referrer } = request.data;
+
+      if (!email || !name || !message) {
+        throw new https Error('invalid-argument', 'Missing required fields');
+      }
+
+      // Check for duplicate (same email in last 24 hours)
+      const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const duplicates = await db
+        .collection('leads')
+        .where('email', '==', email.toLowerCase())
+        .where('createdAt', '>', dayAgo)
+        .limit(1)
+        .get();
+
+      if (!duplicates.empty) {
+        return { success: true, message: 'Lead already exists', duplicate: true };
+      }
+
+      // Calculate lead score
+      let score = 50; // Base score
+      if (company) score += 15;
+      if (phone) score += 10;
+      if (message.length > 100) score += 5;
+      if (message.length > 200) score += 5;
+      if (message.length > 300) score += 5;
+      const emailDomain = email.split('@')[1];
+      if (!['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'].includes(emailDomain)) {
+        score += 20; // Business email
+      }
+      if (source === 'demo_request') score += 25;
+
+      // Create lead document
+      const leadRef = await db.collection('leads').add({
+        email: email.toLowerCase(),
+        name,
+        company: company || null,
+        phone: phone || null,
+        message,
+        source,
+        referrer: referrer || null,
+        score,
+        status: 'new',
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+
+      console.log('LEAD_CAPTURED', {
+        leadId: leadRef.id,
+        email,
+        score,
+        source,
+      });
+
+      return {
+        success: true,
+        message: 'Lead captured successfully',
+        leadId: leadRef.id,
+        score,
+      };
+    } catch (error) {
+      console.error('FUNCTION_ERROR', {
+        function: 'submitLead',
+        details: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
+    }
+  }
+);
+
+/**
+ * Brand Positioning - Generate brand strategy
+ * Callable function that triggers the brand positioning flow
+ */
+export const brandPositioning = onCall(
+  {
+    secrets: [geminiKey],
+    region: "us-central1",
+    memory: "512MiB",
+    timeoutSeconds: 90,
+  },
+  async (request) => {
+    try {
+      const input = request.data || {};
+      const { brandPositioningFlow } = await import("../../src/ai/flows/brand-positioning");
+      const result = await brandPositioningFlow(input);
+      return { success: true, data: result };
+    } catch (error) {
+      console.error("FUNCTION_ERROR", {
+        function: "brandPositioning",
         details: error instanceof Error ? error.message : String(error),
       });
       throw error;
